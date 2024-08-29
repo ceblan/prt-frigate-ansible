@@ -1,1 +1,0 @@
-# prt-frigate-ansible
