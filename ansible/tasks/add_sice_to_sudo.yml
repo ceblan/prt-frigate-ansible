@@ -1,5 +1,5 @@
 ---
-- name: Add user to sudo group
+- name: Add user sice to sudo group
   hosts: all
   become: yes
   become_method: sudo
