@@ -251,7 +251,7 @@ and prompt for the become password. Here's an example of such a playbook:
     - name: Ensure user sice is in the sudo group
       user:
         name: sice
-        group: sudo
+        groups: sudo
         append: yes
     - name: Allow members of the sudo group to run sudo without a password
       lineinfile:
