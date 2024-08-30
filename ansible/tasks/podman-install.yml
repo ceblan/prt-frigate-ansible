@@ -1,0 +1,19 @@
+---
+- name: Install Frigate
+  hosts: localhost
+  tasks:
+    - name: Copy FRIGATE-INSTALL.tar to destination
+      copy:
+        src: /home/concesion/instalacion/DVAS/FRIGATE/FRIGATE-INSTALL.tar
+        dest: /home/sice/instalacion/
+
+    - name: Untar FRIGATE-INSTALL.tar
+      unarchive:
+        src: /home/sice/instalacion/FRIGATE-INSTALL.tar
+        dest: /home/concesion/instalacion/DVAS/FRIGATE/
+        remote_src: yes
+
+    - name: Execute dpkg -i in PODMAN-PKGS directory
+      command: sudo dpkg -i *
+      args:
+        chdir: /home/concesion/instalacion/DVAS/FRIGATE/PODMAN-PKGS/
