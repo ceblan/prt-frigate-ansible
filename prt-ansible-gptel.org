@@ -309,7 +309,7 @@ IP address of a remote Debian machine, constructs a string in the format
     - name: Ensure hostname is reflected in /etc/hosts
       lineinfile:
         path: /etc/hosts
-        regexp: "^127\.0\.1\.1"
+        regexp: '^127.0.1.1'
         line: "127.0.1.1 {{ new_hostname }}"
 #+end_src
 
