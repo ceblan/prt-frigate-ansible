@@ -275,4 +275,65 @@ To run the playbook, save it as =add_sice_to_sudo.yml= and execute:
 ansible-playbook add_sice_to_sudo.yml
 #+end_src
 
+*** Create a playbook that uses the third octet of the IP address to create a string like "prt-zmXX" where XX is the value of the third octet and use that string to set it as the hostname of the remote debian machine
+
+Certainly! Below is an Ansible playbook that extracts the third octet from the
+IP address of a remote Debian machine, constructs a string in the format
+"prt-zmXX", and sets it as the hostname.
+
+*** Playbook: =set_hostname.yml=
+
+#+begin_src yaml :tangle ansible/tasks/set_hostname.yml
+---
+- name: Set hostname based on third octet of IP
+  hosts: all
+  become: yes
+  tasks:
+    - name: Get the IP address of the current host
+      setup:
+        gather_subset:
+          - network
+
+    - name: Extract the third octet
+      set_fact:
+        third_octet: "{{ ansible_default_ipv4.address.split('.')[2] | int }}"
+
+    - name: Create the desired hostname
+      set_fact:
+        new_hostname: "prt-zm{{ '%02d' | format(third_octet) }}"
+
+    - name: Set the new hostname
+      hostname:
+        name: "{{ new_hostname }}"
+
+    - name: Ensure hostname is reflected in /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        regexp: "^127\.0\.1\.1"
+        line: "127.0.1.1 {{ new_hostname }}"
+#+end_src
+
+
+*** Explanation:
+- *Gathering IP Address*: The first task uses the =setup= module to gather network
+  information, including the IP address.
+- *Extracting the Third Octet*: The second task sets a fact (=third_octet=) that
+  extracts the third octet from the IP address by splitting the address string.
+- *Creating the Hostname*: The third task constructs the hostname string in the
+  desired format.
+- *Setting the New Hostname*: The fourth task uses the =hostname= module to set the
+  new hostname.
+- *Updating =/etc/hosts=*: The last task ensures that the new hostname is
+  reflected in the =/etc/hosts= file.
+
+*** How to Run the Playbook
+Save the playbook as =set_hostname.yml=, and execute it using:
+
+#+begin_src bash
+ansible-playbook set_hostname.yml -i inventory_file
+#+end_src
+
+Replace =inventory_file= with your actual inventory file. This playbook will run
+on all hosts specified in the inventory.
+
 
