@@ -39,13 +39,13 @@ allow the user "sice" to run =sudo= without a password.
 #  become: yes
 #  become_method: sudo
 
-  vars_prompt:
-    - name: "ansible_become_pass"
-      become: yes
-      become_method: sudo
-      prompt: "Enter your sudo password"
-      private: yes
-  tasks:
+#  vars_prompt:
+#    - name: "ansible_become_pass"
+#      become: yes
+#      become_method: sudo
+#      prompt: "Enter your sudo password"
+#      private: yes
+#  tasks:
     - name: Ensure user sice is in the sudo group
      become: yes
      become_method: sudo
