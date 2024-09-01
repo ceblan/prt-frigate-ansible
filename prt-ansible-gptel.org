@@ -7,13 +7,18 @@
 :END:
 
 
-*** Create a playbook that changes the hostname to that of the inventory
 
-Certainly! Below is an Ansible playbook that sets the hostname to that of the
-inventory.
+* Playbook para instalar frigate con ansible desde MOMS
 
-*** Playbook: =set_hostname.yml=
+	Los bloques de código de este documento conforman un playbook de ansible
+	que realiza desde el MOMS las tareas de instalación del container podman de
+	frigate asi como sus configuraciones varias en los servidores DVR de PRT.
 
+	Desglosamos distintas tareas en distintos bloques tratando de explicar de
+	que va cada bloque/tares
+
+** Seteamos el hostname delconforme al inventory.ini
+	
 #+begin_src yaml 
 
 ---
@@ -27,10 +32,8 @@ inventory.
 #+end_src
 
 
-*** Can you make a playbook that modifies /etc/sudoers to make the user "sice" run sudo without password?
+** Nos aseguramos que sice está en el grupo sudo y deshabilitamos password de sudo para grupo sudo (a lo loco).
 
-Certainly! Below is an Ansible playbook that modifies the =/etc/sudoers= file to
-allow the user "sice" to run =sudo= without a password.
 
 #+begin_src yaml 
 #---
@@ -56,23 +59,25 @@ allow the user "sice" to run =sudo= without a password.
 #+end_src
 
 *** Explanation:
-	- *=hosts: all=*: Applies the playbook to all hosts in the inventory.
 	- *=become: yes=*: Enables privilege escalation.
-	- *=vars_prompt=*: Prompts the user for the sudo password.
 	- *=tasks=*: Contains the tasks to be performed.
 	- *=user= module*: Ensures the user =sice= is added to the =sudo= group.
 
 
-*** write an ansible playbook that:
-		1. copy the local file
+** El siguiente bloque de código hará las siguientes tareas:
+		1. Ensure the directory ~/instalacion/FRIGATE exists
+		2. copy the local file
            "/home/concesion/instalacion/DVAS/FRIGATE/FRIGATE-INSTALL.tar" into
-           the directory "/home/sice/instalacion"
-		2. Untar FRIGATE-INSTALL.tar in
+           the directory "/home/sice/instalacion" 
+		3. Untar FRIGATE-INSTALL.tar in
            "//home/concesion/instalacion/DVAS/FRIGATE/"
-		3. Execute "dpkg -i *" in directory
+		4. Untar tmux.tar
+		5. Prepare tmux.
+		6. Load podman image
+		7. Execute "dpkg -i *" in directory
            "//home/concesion/instalacion/DVAS/FRIGATE/PODMAN-PKGS/"
 
-Here's an Ansible playbook that accomplishes the tasks you specified:
+
 
  #+begin_src yaml 
 #---
@@ -120,8 +125,18 @@ Here's an Ansible playbook that accomplishes the tasks you specified:
 #+end_src
 
 
-*** Usage:
-Save this playbook in a file named =install_frigate.yml=, and execute it using:
+*** Cómo usarlo:
+
+	*nota*: MOMS ya tiene ansible instalado.
+	
+	Todos los bloques anteriores de código yaml ya han sido volcados al fichero:
+
+	*~/instalacion/DVAS/FRIGATE/prt-frigate-ansible/install_frigate.yml*
+
+	Solo es necesario conectarse a la maquina del MOMS como usuario /concesion/,
+	posicionarse en el directorio adecuado y llamar al comando del siguiente
+	bloque: 
+	
 #+begin_src bash :tangle no
   # conectarse a MOMS (172.30.30.12) como usuario concesion y hacer lo que sigue
   cd ~/instalacion/DVAS/FRIGATE/prt-frigate-ansible

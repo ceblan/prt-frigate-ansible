@@ -1,8 +1,0 @@
----
-- name: Set hostname based on third octet of IP
-  hosts: all
-  become: yes
-  tasks:
-
-    - name: set system hostname
-      command: hostnamectl set-hostname {{ inventory_hostname }}
