@@ -107,7 +107,7 @@ Here's an Ansible playbook that accomplishes the tasks you specified:
         remote_src: yes
 
     - name: Prepare tmux
-      shell: ln -s .tmux/.tmux.conf
+      shell: ln -sf .tmux/.tmux.conf
       args:
         chdir: ~/.
 
