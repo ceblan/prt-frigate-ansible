@@ -8,7 +8,7 @@ PRT.
 Desglosamos distintas tareas en distintos bloques tratando de explicar
 de que va cada bloque/tares
 
-## Seteamos el hostname delconforme al inventory.ini
+## Seteamos el hostname conforme al inventory.ini
 
 ``` yaml
 ---
