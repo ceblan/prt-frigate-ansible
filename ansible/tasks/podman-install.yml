@@ -23,7 +23,7 @@
     - name: Load Podman image from archived file
       shell: bzcat frigate-dvas-podman-img.tar.bz2 | podman load
       args:
-        chdir: /home/concesion/instalacion/DVAS/FRIGATE # Change to the specified directory before executing the command
+        chdir: ~/instalacion/DVAS/FRIGATE # Change to the specified directory before executing the command
 
 #   - name: Install all .deb packages in /path
 #     become: yes
