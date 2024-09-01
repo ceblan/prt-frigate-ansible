@@ -3,31 +3,6 @@
   hosts: all
   become: yes
   tasks:
-    - name: Get the IP address of the current host
-      setup:
-        gather_subset:
-          - network
 
-    - name: Extract the third octet
-      set_fact:
-        third_octet: "{{ ansible_default_ipv4.address.split('.')[2] }}"
-
-    - name: Create the desired hostname
-      set_fact:
-        new_hostname: "prt-zm{{ '%02d' | format(third_octet | int) }}"
-
-    - name: Set the new hostname
-      hostname:
-        name: "{{ new_hostname }}"
-
-    - name: Remove existing line for 127.0.1.1
-      lineinfile:
-        path: /etc/hosts
-        regexp: '^127\.0\.1\.1.*'
-        state: absent
-
-    - name: Add new entry for hostname
-      lineinfile:
-        path: /etc/hosts
-        line: "127.0.1.1 {{ new_hostname }}"
-        state: present
+    - name: set system hostname
+      command: hostnamectl set-hostname {{ inventory_hostname }}
