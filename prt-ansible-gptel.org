@@ -47,8 +47,8 @@ allow the user "sice" to run =sudo= without a password.
 #      private: yes
 #  tasks:
     - name: Ensure user sice is in the sudo group
-     become: yes
-     become_method: sudo
+      become: yes
+      become_method: sudo
       user:
         name: sice
         groups: sudo
