@@ -25,39 +25,40 @@
     validate: 'visudo -cf %s'
 
 - name: Ensure the directory ~/instalacion/FRIGATE exists
-      file:
-        path: ~/instalacion/DVAS/FRIGATE
-        state: directory
-        mode: '0755'  # Optional: Set permissions
+  file:
+    path: ~/instalacion/DVAS/FRIGATE
+    state: directory
+    mode: '0755'  # Optional: Set permissions
 
-   
-    - name: Copy FRIGATE-INSTALL.tar to /home/sice/instalacion
-      copy:
-        src: /home/concesion/instalacion/DVAS/FRIGATE/FRIGATE-INSTALL.tar
-        dest: /home/sice/instalacion/
 
-   
-    - name: Untar FRIGATE-INSTALL.tar
-      unarchive:
-        src: /home/sice/instalacion/FRIGATE-INSTALL.tar
-        dest: /home/sice/instalacion/DVAS/FRIGATE/
-        remote_src: yes
-   
-    - name: Untar tmux.tar
-      unarchive:
-        src: /home/sice/instalacion/DVAS/FRIGATE/frigate-install/tmux.tar
-        dest: ~/.
-        remote_src: yes
+- name: Copy FRIGATE-INSTALL.tar to /home/sice/instalacion
+  copy:
+    src: /home/concesion/instalacion/DVAS/FRIGATE/FRIGATE-INSTALL.tar
+    dest: /home/sice/instalacion/
 
-    - name: Prepare tmux
-      shell: ln -sf .tmux/.tmux.conf
-      args:
-        chdir: ~/.
-   
-    - name: Load frigate_0.13.1-sice-20240628-03.bz2 podman image
-      shell: bzcat frigate_0.13.1-sice-20240628-03.bz2 | podman load
-      args:
-        chdir: ~/instalacion/DVAS/FRIGATE/frigate-install # Change to the specified directory before executing the command
+
+- name: Untar FRIGATE-INSTALL.tar
+  unarchive:
+    src: /home/sice/instalacion/FRIGATE-INSTALL.tar
+    dest: /home/sice/instalacion/DVAS/FRIGATE/
+    remote_src: yes
+
+
+- name: Untar tmux.tar
+  unarchive:
+    src: /home/sice/instalacion/DVAS/FRIGATE/frigate-install/tmux.tar
+    dest: ~/.
+    remote_src: yes
+
+- name: Prepare tmux
+  shell: ln -sf .tmux/.tmux.conf
+  args:
+    chdir: ~/.
+
+- name: Load frigate_0.13.1-sice-20240628-03.bz2 podman image
+  shell: bzcat frigate_0.13.1-sice-20240628-03.bz2 | podman load
+  args:
+    chdir: ~/instalacion/DVAS/FRIGATE/frigate-install # Change to the specified directory before executing the command
 
 #   - name: Install all .deb packages in /path
 #     become: yes
