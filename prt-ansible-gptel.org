@@ -2,8 +2,75 @@
 :GPTEL_MODEL: gpt-4o-mini
 :GPTEL_BACKEND: ChatGPT
 :GPTEL_SYSTEM: You are a large language model living in Emacs and a helpful assistant. Respond concisely.
-:GPTEL_BOUNDS: ((649 . 720) (2537 . 2645) (2859 . 2869) (2978 . 3115) (3116 . 3132))
+:GPTEL_BOUNDS: ((777 . 914) (915 . 931))
+:header-args: :tangle ansible/tasks/install_frigate.yml
 :END:
+
+
+*** Create a playbook that changes the hostname to that of the inventory
+
+Certainly! Below is an Ansible playbook that sets the hostname to that of the
+inventory.
+
+*** Playbook: =set_hostname.yml=
+
+#+begin_src yaml 
+---
+- name: INSTALL FRIGATE
+  hosts: all
+  tasks:
+    - name: set system hostname
+      become: yes
+      command: hostnamectl set-hostname {{ inventory_hostname }}
+
+
+#+end_src
+
+
+*** Can you make a playbook that modifies /etc/sudoers to make the user "sice" run sudo without password?
+
+Certainly! Below is an Ansible playbook that modifies the =/etc/sudoers= file to
+allow the user "sice" to run =sudo= without a password.
+
+#+begin_src yaml 
+#---
+#- name: Add user sice to sudo group
+#  hosts: all
+#  become: yes
+#  become_method: sudo
+
+  vars_prompt:
+    - name: "ansible_become_pass"
+      become: yes
+      become_method: sudo
+      prompt: "Enter your sudo password"
+      private: yes
+  tasks:
+    - name: Ensure user sice is in the sudo group
+     become: yes
+     become_method: sudo
+      user:
+        name: sice
+        groups: sudo
+        append: yes
+    - name: Allow members of the sudo group to run sudo without a password
+      become: yes
+      become_method: sudo
+      lineinfile:
+        path: /etc/sudoers
+        regexp: '^%sudo'
+        line: '%sudo ALL=(ALL:ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
+
+#+end_src
+
+*** Explanation:
+- *=hosts: all=*: Applies the playbook to all hosts in the inventory.
+- *=become: yes=*: Enables privilege escalation.
+- *=vars_prompt=*: Prompts the user for the sudo password.
+- *=tasks=*: Contains the tasks to be performed.
+- *=user= module*: Ensures the user =sice= is added to the =sudo= group.
+
 
 *** write an ansible playbook that:
 		1. copy the local file
@@ -16,11 +83,11 @@
 
 Here's an Ansible playbook that accomplishes the tasks you specified:
 
- #+begin_src yaml :tangle ansible/tasks/podman-install.yml
----
-- name: Install Frigate
-  hosts: all
-  tasks:
+ #+begin_src yaml 
+#---
+#- name: Install Frigate
+#  hosts: all
+#  tasks:
 
     - name: Ensure the directory exists
       file:
@@ -77,84 +144,9 @@ for privilege escalation:
 
 *** Usage:
 Save this playbook in a file named =install_frigate.yml=, and execute it using:
-#+begin_src bash
+#+begin_src bash :tangle no
   # conectarse a MOMS (172.30.30.12) como usuario concesion y hacer lo que sigue
   cd ~/instalacion/DVAS/FRIGATE/prt-frigate-ansible
-  ansible-playbook ansible/tasks/podman-install.yml -i inventory.ini -l prt-zm01
+  ansible-playbook ansible/tasks/install_frigate.yml -i inventory.ini -l prt-zm01
 #+end_src
-
-*** Can you make a playbook that modifies /etc/sudoers to make the user "sice" run sudo without password?
-
-Certainly! Below is an Ansible playbook that modifies the =/etc/sudoers= file to
-allow the user "sice" to run =sudo= without a password.
-
-#+begin_src yaml :tangle ansible/tasks/add_sice_to_sudo.yml
----
-- name: Add user sice to sudo group
-  hosts: all
-  become: yes
-  become_method: sudo
-  vars_prompt:
-    - name: "ansible_become_pass"
-      prompt: "Enter your sudo password"
-      private: yes
-  tasks:
-    - name: Ensure user sice is in the sudo group
-      user:
-        name: sice
-        groups: sudo
-        append: yes
-    - name: Allow members of the sudo group to run sudo without a password
-      lineinfile:
-        path: /etc/sudoers
-        regexp: '^%sudo'
-        line: '%sudo ALL=(ALL:ALL) NOPASSWD: ALL'
-        validate: 'visudo -cf %s'
-
-#+end_src
-
-*** Explanation:
-- *=hosts: all=*: Applies the playbook to all hosts in the inventory.
-- *=become: yes=*: Enables privilege escalation.
-- *=vars_prompt=*: Prompts the user for the sudo password.
-- *=tasks=*: Contains the tasks to be performed.
-- *=user= module*: Ensures the user =sice= is added to the =sudo= group.
-
-To run the playbook, save it as =add_sice_to_sudo.yml= and execute:
-
-#+begin_src bash
-ansible-playbook add_sice_to_sudo.yml
-#+end_src
-
-*** Create a playbook that changes the hostname to that of the inventory
-
-Certainly! Below is an Ansible playbook that sets the hostname to that of the
-inventory.
-
-*** Playbook: =set_hostname.yml=
-
-#+begin_src yaml :tangle ansible/tasks/set_hostname.yml
----
-- name: Set hostname based on third octet of IP
-  hosts: all
-  become: yes
-  tasks:
-
-    - name: set system hostname
-      command: hostnamectl set-hostname {{ inventory_hostname }}
-
-
-#+end_src
-
-
-*** How to Run the Playbook
-Save the playbook as =set_hostname.yml=, and execute it using:
-
-#+begin_src bash
-ansible-playbook set_hostname.yml -i inventory_file
-#+end_src
-
-Replace =inventory_file= with your actual inventory file. This playbook will run
-on all hosts specified in the inventory.
-
 

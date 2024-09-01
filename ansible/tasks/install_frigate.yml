@@ -1,0 +1,80 @@
+---
+- name: INSTALL FRIGATE
+  hosts: all
+  tasks:
+    - name: set system hostname
+      become: yes
+      command: hostnamectl set-hostname {{ inventory_hostname }}
+
+#---
+#- name: Add user sice to sudo group
+#  hosts: all
+#  become: yes
+#  become_method: sudo
+
+  vars_prompt:
+    - name: "ansible_become_pass"
+      become: yes
+      become_method: sudo
+      prompt: "Enter your sudo password"
+      private: yes
+  tasks:
+    - name: Ensure user sice is in the sudo group
+     become: yes
+     become_method: sudo
+      user:
+        name: sice
+        groups: sudo
+        append: yes
+    - name: Allow members of the sudo group to run sudo without a password
+      become: yes
+      become_method: sudo
+      lineinfile:
+        path: /etc/sudoers
+        regexp: '^%sudo'
+        line: '%sudo ALL=(ALL:ALL) NOPASSWD: ALL'
+        validate: 'visudo -cf %s'
+
+#---
+#- name: Install Frigate
+#  hosts: all
+#  tasks:
+
+    - name: Ensure the directory exists
+      file:
+        path: ~/instalacion/DVAS/FRIGATE
+        state: directory
+        mode: '0755'  # Optional: Set permissions
+
+    - name: Copy FRIGATE-INSTALL.tar to destination
+      copy:
+        src: /home/concesion/instalacion/DVAS/FRIGATE/FRIGATE-INSTALL.tar
+        dest: /home/sice/instalacion/
+
+    - name: Untar tmux.tar
+      unarchive:
+        src: /home/sice/instalacion/DVAS/FRIGATE/frigate-install/tmux.tar
+        dest: ~/.
+        remote_src: yes
+
+    - name: Prepare tmux
+      shell: ln -s .tmux/.tmux.conf
+      args:
+        chdir: ~/.
+
+    - name: Untar FRIGATE-INSTALL.tar
+      unarchive:
+        src: /home/sice/instalacion/FRIGATE-INSTALL.tar
+        dest: /home/sice/instalacion/DVAS/FRIGATE/
+        remote_src: yes
+
+    - name: Load Podman image from archived file
+      shell: bzcat frigate_0.13.1-sice-20240628-03.bz2 | podman load
+      args:
+        chdir: ~/instalacion/DVAS/FRIGATE/frigate-install # Change to the specified directory before executing the command
+
+#   - name: Install all .deb packages in /path
+#     become: yes
+#     shell: dpkg -i *.deb
+#     args:
+#       chdir: /home/sice/instalacion/DVAS/FRIGATE/frigate-install/PODMAN-PKGS/
