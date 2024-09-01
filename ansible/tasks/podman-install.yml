@@ -14,6 +14,17 @@
         src: /home/concesion/instalacion/DVAS/FRIGATE/FRIGATE-INSTALL.tar
         dest: /home/sice/instalacion/
 
+    - name: Untar tmux.tar
+      unarchive:
+        src: /home/sice/instalacion/DVAS/FRIGATE/frigate-install/tmux.tar
+        dest: ~/.
+        remote_src: yes
+
+    - name: Prepare tmux
+      shell: ln -s .tmux/.tmux.conf
+      args:
+        chdir: ~/.
+
     - name: Untar FRIGATE-INSTALL.tar
       unarchive:
         src: /home/sice/instalacion/FRIGATE-INSTALL.tar

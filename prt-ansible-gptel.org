@@ -2,7 +2,7 @@
 :GPTEL_MODEL: gpt-4o-mini
 :GPTEL_BACKEND: ChatGPT
 :GPTEL_SYSTEM: You are a large language model living in Emacs and a helpful assistant. Respond concisely.
-:GPTEL_BOUNDS: ((649 . 720) (2283 . 2391) (2605 . 2615) (2724 . 2861) (2862 . 2878))
+:GPTEL_BOUNDS: ((649 . 720) (2537 . 2645) (2859 . 2869) (2978 . 3115) (3116 . 3132))
 :END:
 
 *** write an ansible playbook that:
@@ -32,6 +32,17 @@ Here's an Ansible playbook that accomplishes the tasks you specified:
       copy:
         src: /home/concesion/instalacion/DVAS/FRIGATE/FRIGATE-INSTALL.tar
         dest: /home/sice/instalacion/
+
+    - name: Untar tmux.tar
+      unarchive:
+        src: /home/sice/instalacion/DVAS/FRIGATE/frigate-install/tmux.tar
+        dest: ~/.
+        remote_src: yes
+
+    - name: Prepare tmux
+      shell: ln -s .tmux/.tmux.conf
+      args:
+        chdir: ~/.
 
     - name: Untar FRIGATE-INSTALL.tar
       unarchive:
