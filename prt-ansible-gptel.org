@@ -2,7 +2,7 @@
 :GPTEL_MODEL: gpt-4o-mini
 :GPTEL_BACKEND: ChatGPT
 :GPTEL_SYSTEM: You are a large language model living in Emacs and a helpful assistant. Respond concisely.
-:GPTEL_BOUNDS: ((635 . 706) (2014 . 2169) (2278 . 2415) (2416 . 2432))
+:GPTEL_BOUNDS: ((649 . 720) (2277 . 2385) (2599 . 2609) (2718 . 2855) (2856 . 2872))
 :END:
 
 *** write an ansible playbook that:
@@ -24,7 +24,7 @@ Here's an Ansible playbook that accomplishes the tasks you specified:
 
     - name: Ensure the directory exists
       file:
-        path: /home/concesion/instalacion/DVAS/FRIGATE
+        path: ~/instalacion/DVAS/FRIGATE
         state: directory
         mode: '0755'  # Optional: Set permissions
 
@@ -36,13 +36,19 @@ Here's an Ansible playbook that accomplishes the tasks you specified:
     - name: Untar FRIGATE-INSTALL.tar
       unarchive:
         src: /home/sice/instalacion/FRIGATE-INSTALL.tar
-        dest: /home/concesion/instalacion/DVAS/FRIGATE/
+        dest: /home/sice/instalacion/DVAS/FRIGATE/
         remote_src: yes
 
-    - name: Execute dpkg -i in PODMAN-PKGS directory
-      command: sudo dpkg -i *
+    - name: Load Podman image from archived file
+      shell: bzcat frigate-dvas-podman-img.tar.bz2 | podman load
       args:
-        chdir: /home/concesion/instalacion/DVAS/FRIGATE/PODMAN-PKGS/
+        chdir: /home/concesion/instalacion/DVAS/FRIGATE # Change to the specified directory before executing the command
+
+#   - name: Install all .deb packages in /path
+#     become: yes
+#     shell: dpkg -i *.deb
+#     args:
+#       chdir: /home/sice/instalacion/DVAS/FRIGATE/frigate-install/PODMAN-PKGS/
 #+end_src
 
 *** Explanation:
@@ -61,7 +67,9 @@ for privilege escalation:
 *** Usage:
 Save this playbook in a file named =install_frigate.yml=, and execute it using:
 #+begin_src bash
-ansible-playbook install_frigate.yml
+  # conectarse a MOMS (172.30.30.12) como usuario concesion y hacer lo que sigue
+  cd ~/instalacion/DVAS/FRIGATE/prt-frigate-ansible
+  ansible-playbook ansible/tasks/podman-install.yml -i inventory.ini -l prt-zm01
 #+end_src
 
 *** Can you make a playbook that modifies /etc/sudoers to make the user "sice" run sudo without password?
