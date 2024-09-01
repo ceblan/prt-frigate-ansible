@@ -1,7 +1,14 @@
 ---
 - name: Install Frigate
-  hosts: localhost
+  hosts: all
   tasks:
+
+    - name: Ensure the directory exists
+      file:
+        path: /home/concesion/instalacion/DVAS/FRIGATE
+        state: directory
+        mode: '0755'  # Optional: Set permissions
+
     - name: Copy FRIGATE-INSTALL.tar to destination
       copy:
         src: /home/concesion/instalacion/DVAS/FRIGATE/FRIGATE-INSTALL.tar
