@@ -2,7 +2,7 @@
 :GPTEL_MODEL: gpt-4o-mini
 :GPTEL_BACKEND: ChatGPT
 :GPTEL_SYSTEM: You are a large language model living in Emacs and a helpful assistant. Respond concisely.
-:GPTEL_BOUNDS: ((649 . 720) (2263 . 2371) (2585 . 2595) (2704 . 2841) (2842 . 2858))
+:GPTEL_BOUNDS: ((649 . 720) (2267 . 2375) (2589 . 2599) (2708 . 2845) (2846 . 2862))
 :END:
 
 *** write an ansible playbook that:
@@ -40,7 +40,7 @@ Here's an Ansible playbook that accomplishes the tasks you specified:
         remote_src: yes
 
     - name: Load Podman image from archived file
-      shell: bzcat frigate-dvas-podman-img.tar.bz2 | podman load
+      shell: bzcat frigate_0.13.1-sice-20240628-03.bz2 | podman load
       args:
         chdir: ~/instalacion/DVAS/FRIGATE # Change to the specified directory before executing the command
 

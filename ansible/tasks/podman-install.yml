@@ -21,7 +21,7 @@
         remote_src: yes
 
     - name: Load Podman image from archived file
-      shell: bzcat frigate-dvas-podman-img.tar.bz2 | podman load
+      shell: bzcat frigate_0.13.1-sice-20240628-03.bz2 | podman load
       args:
         chdir: ~/instalacion/DVAS/FRIGATE # Change to the specified directory before executing the command
 
