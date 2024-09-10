@@ -92,18 +92,18 @@
         line: '# tos minclock 4 minsane 3'
         state: present
 
-    - name: Replace pool lines with tpcc ip address as server
+    - name: Comment out existing pool lines
       become: true
-      lineinfile:
+      replace:
         path: /etc/ntpsec/ntp.conf
-        regexp: '^(pool 0.debian.pool.ntp.org|pool 1.debian.pool.ntp.org|pool 2.debian.pool.ntp.org|pool 3.debian.pool.ntp.org)'
-        line: '# \0'
-        state: present
+        regexp: '^(pool 0\.debian\.pool\.ntp\.org|pool 1\.debian\.pool\.ntp\.org|pool 2\.debian\.pool\.ntp\.org|pool 3\.debian\.pool\.ntp\.org)'
+        replace: '# \g<0>'
 
-    - name: Replace pool lines with server line
+
+    - name: Add TPCC ip as server
       become: true
       lineinfile:
         path: /etc/ntpsec/ntp.conf
-        regexp: '^pool 3.debian.pool.ntp.org'
-        line: "server {{ inventory_hostname | regex_replace('(^[0-9]+\\.[0-9]+\\.[0-9]+\\.)[0-9]+', '\\1') }}1 iburst"
+        regexp: '^# pool 3.debian.pool.ntp.org'
+        line: "server {{ ansible_host.split('.')[0:3] | join('.') }}.1 iburst"
         state: present
