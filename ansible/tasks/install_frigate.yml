@@ -145,7 +145,7 @@
         state: directory
         mode: '0755'  # Optional: Set permissions
 
-    - name: Copy arbitrary files from local to remote directory
+    - name: Copy frigate_launch stuff
       copy:
         src: "{{ item }}"
         dest: /home/sice/instalacion/frigate/
@@ -154,7 +154,7 @@
         - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_launch/frigate.service
         - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_launch/lanza_frigate.sh
 
-    - name: Copy arbitrary files from local to remote directory
+    - name: Copy frigate_config stuff
       copy:
         src: "{{ item }}"
         dest: /home/sice/instalacion/frigate/config/
@@ -162,6 +162,13 @@
         - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_config/get_video.sh
         - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_config/cameras.env
         - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_config/{{ inventory_hostname}}/config.yml
+
+    - name: Copy .local stuff
+      copy:
+        src: /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/.local
+        dest: /home/concesion/
+        remote_src: no
+        recurse: yes
 
     - name: change owner to ~/instalacion/frigate
       become: yes
