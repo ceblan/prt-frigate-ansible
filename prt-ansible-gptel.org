@@ -119,19 +119,63 @@
       args:
         chdir: /home/sice
 
-    - name: Load frigate_0.13.1-sice-20240628-03.bz2 podman image
-      shell: bzcat frigate_0.13.1-sice-20240628-03.bz2 | podman load
-      args:
-        chdir: /home/sice/instalacion/DVAS/FRIGATE/frigate-install # Change to the specified directory before executing the command
+#   - name: Load frigate_0.13.1-sice-20240628-03.bz2 podman image
+#     shell: bzcat frigate_0.13.1-sice-20240628-03.bz2 | podman load
+#     args:
+#       chdir: /home/sice/instalacion/DVAS/FRIGATE/frigate-install # Change to the specified directory before executing the command
 
 #   - name: Install all .deb packages in /path
 #     become: yes
 #     shell: dpkg -i *.deb
 #     args:
 #       chdir: /home/sice/instalacion/DVAS/FRIGATE/frigate-install/PODMAN-PKGS/
+
 #+end_src
 
+** Zona horaria y sincronización
 
+
+#+begin_src yaml 
+
+#---
+
+    - name: Set timezone to America/Puerto_Rico
+      become: true
+      community.general.timezone:
+        name: America/Puerto_Rico
+ 
+    - name: Comment out line containing 'tos minclock 4 minsane 3'
+      become: true
+      lineinfile:
+        path: /etc/ntpsec/ntp.conf
+        regexp: '^tos minclock 4 minsane 3'
+        line: '# tos minclock 4 minsane 3'
+        state: present
+
+    - name: Comment out existing pool lines
+      become: true
+      replace:
+        path: /etc/ntpsec/ntp.conf
+        regexp: '^(pool 0\.debian\.pool\.ntp\.org|pool 1\.debian\.pool\.ntp\.org|pool 2\.debian\.pool\.ntp\.org|pool 3\.debian\.pool\.ntp\.org)'
+        replace: '# \g<0>'
+
+
+    - name: Add TPCC ip as server
+      become: true
+      lineinfile:
+        path: /etc/ntpsec/ntp.conf
+        regexp: '^# pool 3.debian.pool.ntp.org'
+        line: "server {{ ansible_host.split('.')[0:3] | join('.') }}.1 iburst"
+        state: present
+
+    - name: Restart ntpsec service
+      become: true
+      systemd:
+        name: ntpsec
+        state: restarted
+        enabled: true
+
+#+end_src
 *** Cómo usarlo:
 
 	*nota*: MOMS ya tiene ansible instalado.

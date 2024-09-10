@@ -79,7 +79,7 @@
 
 #---
 
-    - name: Set timezone to Asia/Tokyo
+    - name: Set timezone to America/Puerto_Rico
       become: true
       community.general.timezone:
         name: America/Puerto_Rico
