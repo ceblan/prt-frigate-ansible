@@ -76,3 +76,34 @@
 #     shell: dpkg -i *.deb
 #     args:
 #       chdir: /home/sice/instalacion/DVAS/FRIGATE/frigate-install/PODMAN-PKGS/
+
+#---
+
+    - name: Set timezone to Asia/Tokyo
+      become: true
+      community.general.timezone:
+      name: America/Puerto_Rico
+ 
+    - name: Comment out line containing 'tos minclock 4 minsane 3'
+      become: true
+      lineinfile:
+        path: /etc/ntpsec/ntp.conf
+        regexp: '^tos minclock 4 minsane 3'
+        line: '# tos minclock 4 minsane 3'
+        state: present
+
+#    - name: Replace pool lines with tpcc ip address as server
+#      become: true
+#      lineinfile:
+#        path: /etc/ntpsec/ntp.conf
+#        regexp: '^(pool 0.debian.pool.ntp.org|pool 1.debian.pool.ntp.org|pool 2.debian.pool.ntp.org|pool 3.debian.pool.ntp.org)'
+#        line: 'server 172.30.31.250 iburst'
+#        state: present
+
+    - name: Replace pool lines with server line
+      become: true
+      lineinfile:
+        path: /etc/ntpsec/ntp.conf
+        regexp: '^(pool 0.debian.pool.ntp.org|pool 1.debian.pool.ntp.org|pool 2.debian.pool.ntp.org|pool 3.debian.pool.ntp.org)'
+        line: "server {{ inventory_hostname | regex_replace('(^[0-9]+\\.[0-9]+\\.[0-9]+\\.)[0-9]+', '\\11') }} iburst"
+        state: present
