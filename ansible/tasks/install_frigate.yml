@@ -82,7 +82,7 @@
     - name: Set timezone to Asia/Tokyo
       become: true
       community.general.timezone:
-      name: America/Puerto_Rico
+        name: America/Puerto_Rico
  
     - name: Comment out line containing 'tos minclock 4 minsane 3'
       become: true
