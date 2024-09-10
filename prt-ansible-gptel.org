@@ -232,11 +232,9 @@
         - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_config/{{ inventory_hostname}}/config.yml
 
     - name: Copy .local stuff
-      copy:
+      synchronize:
         src: /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/.local
         dest: /home/concesion/
-        remote_src: no
-        recurse: yes
 
     - name: change owner to ~/instalacion/frigate
       become: yes
