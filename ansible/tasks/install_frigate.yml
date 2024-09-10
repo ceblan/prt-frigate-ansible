@@ -150,18 +150,18 @@
         src: "{{ item }}"
         dest: /home/sice/instalacion/frigate/
       loop:
-        - /home/sice/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_launchers/docker-compose.yml
-        - /home/sice/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_launchers/frigate.service
-        - /home/sice/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_launchers/lanza_frigate.sh
+        - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_launchers/docker-compose.yml
+        - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_launchers/frigate.service
+        - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_launchers/lanza_frigate.sh
 
     - name: Copy arbitrary files from local to remote directory
       copy:
         src: "{{ item }}"
         dest: /home/sice/instalacion/frigate/config/
       loop:
-        - /home/sice/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_config/get_video.sh
-        - /home/sice/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_config/cameras.env
-        - /home/sice/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_config/{{ inventari.hostname}}/config.yml
+        - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_config/get_video.sh
+        - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_config/cameras.env
+        - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_config/{{ inventari.hostname}}/config.yml
 
     - name: change owner to ~/instalacion/frigate
       become: yes
