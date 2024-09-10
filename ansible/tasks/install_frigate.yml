@@ -183,6 +183,6 @@
         path: "{{ item }}"
         mode: '0755'  # Set the desired permissions
       with_items:
-        path: /home/sice/.local/bin/podman-compose
-        path: /home/sice/instalacion/frigate/lanza_frigate.sh
-        path: /home/sice/instalacion/frigate/config/get_video.sh
+        - /home/sice/.local/bin/podman-compose
+        - /home/sice/instalacion/frigate/lanza_frigate.sh
+        - /home/sice/instalacion/frigate/config/get_video.sh
