@@ -34,16 +34,20 @@
 
 #---
 
-    - name: Ensure the directory ~/instalacion/FRIGATE exists
+    - name: Ensure the directory ~/instalacion/DVAS/FRIGATE exists
       file:
         path: ~/instalacion/DVAS/FRIGATE
         state: directory
         mode: '0755'  # Optional: Set permissions
 
-    - name: Copy FRIGATE-INSTALL.tar to /home/sice/instalacion
+    - name: change owner to ~/instalacion/DVAS/FRIGATE
+      become: yes
+      command: chown -R sice:sice /home/sice/instalacion/DVAS/FRIGATE
+
+    - name: Copy FRIGATE-INSTALL.tar to {{ inventory_hostname }}:~/instalacion/DVAS/FRIGATE
       copy:
         src: /home/concesion/instalacion/DVAS/FRIGATE/FRIGATE-INSTALL.tar
-        dest: /home/sice/instalacion/
+        dest: /home/sice/instalacion
 
     - name: Untar FRIGATE-INSTALL.tar
       unarchive:
