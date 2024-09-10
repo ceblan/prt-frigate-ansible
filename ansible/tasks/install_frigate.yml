@@ -81,11 +81,11 @@
 #     args:
 #       chdir: /home/sice/instalacion/DVAS/FRIGATE/frigate-install # Change to the specified directory before executing the command
 
-   - name: Install all .deb packages in /path
-     become: yes
-     shell: dpkg -i ffmpeg_7%3a5.1.6-0+deb12u1_amd64.deb
-     args:
-       chdir: /home/sice/instalacion/DVAS/FRIGATE/frigate-install/PODMAN-PKGS/
+    - name: Install all .deb packages in /path
+      become: yes
+      shell: dpkg -i ffmpeg_7%3a5.1.6-0+deb12u1_amd64.deb
+      args:
+        chdir: /home/sice/instalacion/DVAS/FRIGATE/frigate-install/PODMAN-PKGS/
 
 #---
 
