@@ -104,6 +104,6 @@
       become: true
       lineinfile:
         path: /etc/ntpsec/ntp.conf
-        regexp: '^(#pool 3.debian.pool.ntp.org)'
-        line: "server {{ inventory_hostname | regex_replace('(^[0-9]+\\.[0-9]+\\.[0-9]+\\.)[0-9]+', '\\11') }} iburst"
+        regexp: '^server 172.30.31.250 iburst'
+        line: "server {{ inventory_hostname | regex_replace('(^[0-9]+\\.[0-9]+\\.[0-9]+\\.)[0-9]+', '\\1') }}1 iburst"
         state: present
