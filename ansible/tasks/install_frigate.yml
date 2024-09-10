@@ -165,7 +165,7 @@
 
     - name: Copy .local stuff
       copy:
-        src: /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/.local
+        src: /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/.local
         dest: /home/concesion/
         remote_src: no
         recurse: yes
