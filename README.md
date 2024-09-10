@@ -14,6 +14,13 @@ de que va cada bloque/tares
 ---
 - name: INSTALL FRIGATE
   hosts: all
+#  become: yes
+  become_method: sudo
+  vars_prompt:
+    - name: "ansible_become_pass"
+      prompt: "Enter your sudo password"
+      private: yes
+
   tasks:
     - name: set system hostname to {{ inventory_hostname }}
       become: yes
@@ -33,7 +40,6 @@ de que va cada bloque/tares
         name: sice
         groups: sudo
         append: yes
-
 
     - name: Allow members of the sudo group to run sudo without a password
       become: yes
@@ -70,18 +76,20 @@ de que va cada bloque/tares
 ``` yaml
 #---
 
-    - name: Ensure the directory ~/instalacion/FRIGATE exists
+    - name: Ensure the directory ~/instalacion/DVAS/FRIGATE exists
       file:
-        path: ~/instalacion/DVAS/FRIGATE
+        path: /home/sice/instalacion/DVAS/FRIGATE
         state: directory
         mode: '0755'  # Optional: Set permissions
 
+    - name: change owner to ~/instalacion/DVAS/FRIGATE
+      become: yes
+      command: chown -R sice:sice /home/sice/instalacion/DVAS/FRIGATE
 
-    - name: Copy FRIGATE-INSTALL.tar to /home/sice/instalacion
+    - name: Copy FRIGATE-INSTALL.tar to {{ inventory_hostname }}:~/instalacion/DVAS/FRIGATE
       copy:
         src: /home/concesion/instalacion/DVAS/FRIGATE/FRIGATE-INSTALL.tar
-        dest: /home/sice/instalacion/
-
+        dest: /home/sice/instalacion
 
     - name: Untar FRIGATE-INSTALL.tar
       unarchive:
@@ -92,24 +100,68 @@ de que va cada bloque/tares
     - name: Untar tmux.tar
       unarchive:
         src: /home/sice/instalacion/DVAS/FRIGATE/frigate-install/tmux.tar
-        dest: ~/.
+        dest: /home/sice
         remote_src: yes
 
     - name: Prepare tmux
       shell: ln -sf .tmux/.tmux.conf
       args:
-        chdir: ~/.
+        chdir: /home/sice
 
-    - name: Load frigate_0.13.1-sice-20240628-03.bz2 podman image
-      shell: bzcat frigate_0.13.1-sice-20240628-03.bz2 | podman load
-      args:
-        chdir: ~/instalacion/DVAS/FRIGATE/frigate-install # Change to the specified directory before executing the command
+#   - name: Load frigate_0.13.1-sice-20240628-03.bz2 podman image
+#     shell: bzcat frigate_0.13.1-sice-20240628-03.bz2 | podman load
+#     args:
+#       chdir: /home/sice/instalacion/DVAS/FRIGATE/frigate-install # Change to the specified directory before executing the command
 
 #   - name: Install all .deb packages in /path
 #     become: yes
 #     shell: dpkg -i *.deb
 #     args:
 #       chdir: /home/sice/instalacion/DVAS/FRIGATE/frigate-install/PODMAN-PKGS/
+
+```
+
+## Zona horaria y sincronización
+
+``` yaml
+#---
+
+    - name: Set timezone to America/Puerto_Rico
+      become: true
+      community.general.timezone:
+        name: America/Puerto_Rico
+
+    - name: Comment out line containing 'tos minclock 4 minsane 3'
+      become: true
+      lineinfile:
+        path: /etc/ntpsec/ntp.conf
+        regexp: '^tos minclock 4 minsane 3'
+        line: '# tos minclock 4 minsane 3'
+        state: present
+
+    - name: Comment out existing pool lines
+      become: true
+      replace:
+        path: /etc/ntpsec/ntp.conf
+        regexp: '^(pool 0\.debian\.pool\.ntp\.org|pool 1\.debian\.pool\.ntp\.org|pool 2\.debian\.pool\.ntp\.org|pool 3\.debian\.pool\.ntp\.org)'
+        replace: '# \g<0>'
+
+
+    - name: Add TPCC ip as server
+      become: true
+      lineinfile:
+        path: /etc/ntpsec/ntp.conf
+        regexp: '^# pool 3.debian.pool.ntp.org'
+        line: "server {{ ansible_host.split('.')[0:3] | join('.') }}.1 iburst"
+        state: present
+
+    - name: Restart ntpsec service
+      become: true
+      systemd:
+        name: ntpsec
+        state: restarted
+        enabled: true
+
 ```
 
 ### Cómo usarlo:
@@ -129,4 +181,5 @@ del siguiente bloque:
 # conectarse a MOMS (172.30.30.12) como usuario concesion y hacer lo que sigue
 cd ~/instalacion/DVAS/FRIGATE/prt-frigate-ansible
 ansible-playbook ansible/tasks/install_frigate.yml -i inventory.ini -l prt-zm01
+
 ```
