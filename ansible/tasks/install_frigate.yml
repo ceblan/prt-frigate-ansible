@@ -172,3 +172,13 @@
     - name: change owner to ~/instalacion/frigate
       become: yes
       command: chown -R sice:sice /home/sice/instalacion/frigate
+
+    - name: change owner to ~/.local
+      become: yes
+      command: chown -R sice:sice /home/sice/.local
+
+    - name: Change permissions to podman-compose
+      become: true
+      file:
+        path: /home/sice/.local/bin/podman-compose
+        mode: '0755'  # Set the desired permissions
