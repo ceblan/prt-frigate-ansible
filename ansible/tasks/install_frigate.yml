@@ -36,7 +36,7 @@
 
     - name: Ensure the directory ~/instalacion/DVAS/FRIGATE exists
       file:
-        path: ~/instalacion/DVAS/FRIGATE
+        path: /home/sice/instalacion/DVAS/FRIGATE
         state: directory
         mode: '0755'  # Optional: Set permissions
 
