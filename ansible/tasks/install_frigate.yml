@@ -54,6 +54,11 @@
         src: /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/.ssh/config
         dest: /home/sice/.ssh
 
+    - name: Copy files/bash/.bashrc to {{ inventory_hostname }}:~/.bashrc
+      copy:
+        src: /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/bash/.bashrc
+        dest: /home/sice
+
     - name: Untar FRIGATE-INSTALL.tar
       unarchive:
         src: /home/sice/instalacion/FRIGATE-INSTALL.tar
@@ -119,3 +124,45 @@
         name: ntpsec
         state: restarted
         enabled: true
+
+#---
+
+    - name: Ensure the directory ~/instalacion/frigate exists
+      file:
+        path: /home/sice/instalacion/frigate
+        state: directory
+        mode: '0755'  # Optional: Set permissions
+
+    - name: Ensure the directory ~/instalacion/frigate/storage exists
+      file:
+        path: /home/sice/instalacion/frigate/storage
+        state: directory
+        mode: '0755'  # Optional: Set permissions
+
+    - name: Ensure the directory ~/instalacion/frigate/config exists
+      file:
+        path: /home/sice/instalacion/frigate/config
+        state: directory
+        mode: '0755'  # Optional: Set permissions
+
+    - name: Copy arbitrary files from local to remote directory
+      copy:
+        src: "{{ item }}"
+        dest: /home/sice/instalacion/frigate/
+      loop:
+        - /home/sice/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_launchers/docker-compose.yml
+        - /home/sice/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_launchers/frigate.service
+        - /home/sice/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_launchers/lanza_frigate.sh
+
+    - name: Copy arbitrary files from local to remote directory
+      copy:
+        src: "{{ item }}"
+        dest: /home/sice/instalacion/frigate/config/
+      loop:
+        - /home/sice/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_config/get_video.sh
+        - /home/sice/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_config/cameras.env
+        - /home/sice/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_config/{{ inventari.hostname}}/config.yml
+
+    - name: change owner to ~/instalacion/frigate
+      become: yes
+      command: chown -R sice:sice /home/sice/instalacion/frigate
