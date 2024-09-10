@@ -107,3 +107,10 @@
         regexp: '^# pool 3.debian.pool.ntp.org'
         line: "server {{ ansible_host.split('.')[0:3] | join('.') }}.1 iburst"
         state: present
+
+    - name: Restart ntpsec service
+      become: true
+      systemd:
+        name: ntpsec
+        state: restarted
+        enabled: true
