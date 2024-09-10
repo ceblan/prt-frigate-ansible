@@ -177,8 +177,12 @@
       become: yes
       command: chown -R sice:sice /home/sice/.local
 
-    - name: Change permissions to podman-compose
+    - name: Change permissions to executables
       become: true
       file:
-        path: /home/sice/.local/bin/podman-compose
+        path: {{ item }}
         mode: '0755'  # Set the desired permissions
+      with_items:
+        path: /home/sice/.local/bin/podman-compose
+        path: /home/sice/instalacion/frigate/lanza_frigate.sh
+        path: /home/sice/instalacion/frigate/config/get_video.sh
