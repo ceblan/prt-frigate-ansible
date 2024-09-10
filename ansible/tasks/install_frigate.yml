@@ -58,13 +58,13 @@
     - name: Untar tmux.tar
       unarchive:
         src: /home/sice/instalacion/DVAS/FRIGATE/frigate-install/tmux.tar
-        dest: ~/.
+        dest: /home/sice
         remote_src: yes
 
     - name: Prepare tmux
       shell: ln -sf .tmux/.tmux.conf
       args:
-        chdir: ~/.
+        chdir: /home/sice
 
     - name: Load frigate_0.13.1-sice-20240628-03.bz2 podman image
       shell: bzcat frigate_0.13.1-sice-20240628-03.bz2 | podman load
