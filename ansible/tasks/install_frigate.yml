@@ -150,9 +150,9 @@
         src: "{{ item }}"
         dest: /home/sice/instalacion/frigate/
       loop:
-        - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_launchers/docker-compose.yml
-        - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_launchers/frigate.service
-        - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_launchers/lanza_frigate.sh
+        - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_launch/docker-compose.yml
+        - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_launch/frigate.service
+        - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_launch/lanza_frigate.sh
 
     - name: Copy arbitrary files from local to remote directory
       copy:
