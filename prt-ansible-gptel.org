@@ -23,10 +23,10 @@
 ---
 - name: INSTALL FRIGATE
   hosts: all
+#  become: yes
+  become_method: sudo
   vars_prompt:
     - name: "ansible_become_pass"
-      become: yes
-      become_method: sudo
       prompt: "Enter your sudo password"
       private: yes
 
@@ -87,16 +87,20 @@
  #+begin_src yaml 
 #---
 
-    - name: Ensure the directory ~/instalacion/FRIGATE exists
+    - name: Ensure the directory ~/instalacion/DVAS/FRIGATE exists
       file:
-        path: ~/instalacion/DVAS/FRIGATE
+        path: /home/sice/instalacion/DVAS/FRIGATE
         state: directory
         mode: '0755'  # Optional: Set permissions
 
-    - name: Copy FRIGATE-INSTALL.tar to /home/sice/instalacion
+    - name: change owner to ~/instalacion/DVAS/FRIGATE
+      become: yes
+      command: chown -R sice:sice /home/sice/instalacion/DVAS/FRIGATE
+
+    - name: Copy FRIGATE-INSTALL.tar to {{ inventory_hostname }}:~/instalacion/DVAS/FRIGATE
       copy:
         src: /home/concesion/instalacion/DVAS/FRIGATE/FRIGATE-INSTALL.tar
-        dest: /home/sice/instalacion/
+        dest: /home/sice/instalacion
 
     - name: Untar FRIGATE-INSTALL.tar
       unarchive:
@@ -107,18 +111,18 @@
     - name: Untar tmux.tar
       unarchive:
         src: /home/sice/instalacion/DVAS/FRIGATE/frigate-install/tmux.tar
-        dest: ~/.
+        dest: /home/sice
         remote_src: yes
 
     - name: Prepare tmux
       shell: ln -sf .tmux/.tmux.conf
       args:
-        chdir: ~/.
+        chdir: /home/sice
 
     - name: Load frigate_0.13.1-sice-20240628-03.bz2 podman image
       shell: bzcat frigate_0.13.1-sice-20240628-03.bz2 | podman load
       args:
-        chdir: ~/instalacion/DVAS/FRIGATE/frigate-install # Change to the specified directory before executing the command
+        chdir: /home/sice/instalacion/DVAS/FRIGATE/frigate-install # Change to the specified directory before executing the command
 
 #   - name: Install all .deb packages in /path
 #     become: yes
