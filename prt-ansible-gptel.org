@@ -229,7 +229,7 @@
       loop:
         - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_config/get_video.sh
         - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_config/cameras.env
-        - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_config/{{ inventori_hostname}}/config.yml
+        - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_config/{{ inventory_hostname}}/config.yml
 
     - name: change owner to ~/instalacion/frigate
       become: yes
