@@ -49,6 +49,11 @@
         src: /home/concesion/instalacion/DVAS/FRIGATE/FRIGATE-INSTALL.tar
         dest: /home/sice/instalacion
 
+    - name: Copy files/.ssh/config to {{ inventory_hostname }}:~/.ssh/config
+      copy:
+        src: /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/.ssh/config
+        dest: /home/sice/.ssh
+
     - name: Untar FRIGATE-INSTALL.tar
       unarchive:
         src: /home/sice/instalacion/FRIGATE-INSTALL.tar
