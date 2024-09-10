@@ -1,10 +1,10 @@
 ---
 - name: INSTALL FRIGATE
   hosts: all
+  become: yes
+  become_method: sudo
   vars_prompt:
     - name: "ansible_become_pass"
-      become: yes
-      become_method: sudo
       prompt: "Enter your sudo password"
       private: yes
 
