@@ -97,13 +97,13 @@
       lineinfile:
         path: /etc/ntpsec/ntp.conf
         regexp: '^(pool 0.debian.pool.ntp.org|pool 1.debian.pool.ntp.org|pool 2.debian.pool.ntp.org|pool 3.debian.pool.ntp.org)'
-        line: 'server 172.30.31.250 iburst'
+        line: '# \0'
         state: present
 
     - name: Replace pool lines with server line
       become: true
       lineinfile:
         path: /etc/ntpsec/ntp.conf
-        regexp: '^server 172.30.31.250 iburst'
+        regexp: '^pool 3.debian.pool.ntp.org'
         line: "server {{ inventory_hostname | regex_replace('(^[0-9]+\\.[0-9]+\\.[0-9]+\\.)[0-9]+', '\\1') }}1 iburst"
         state: present
