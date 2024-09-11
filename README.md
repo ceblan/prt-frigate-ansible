@@ -91,6 +91,16 @@ de que va cada bloque/tares
         src: /home/concesion/instalacion/DVAS/FRIGATE/FRIGATE-INSTALL.tar
         dest: /home/sice/instalacion
 
+    - name: Copy files/.ssh/config to {{ inventory_hostname }}:~/.ssh/config
+      copy:
+        src: /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/.ssh/config
+        dest: /home/sice/.ssh
+
+    - name: Copy files/bash/.bashrc to {{ inventory_hostname }}:~/.bashrc
+      copy:
+        src: /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/bash/.bashrc
+        dest: /home/sice
+
     - name: Untar FRIGATE-INSTALL.tar
       unarchive:
         src: /home/sice/instalacion/FRIGATE-INSTALL.tar
@@ -108,16 +118,16 @@ de que va cada bloque/tares
       args:
         chdir: /home/sice
 
-#   - name: Load frigate_0.13.1-sice-20240628-03.bz2 podman image
-#     shell: bzcat frigate_0.13.1-sice-20240628-03.bz2 | podman load
-#     args:
-#       chdir: /home/sice/instalacion/DVAS/FRIGATE/frigate-install # Change to the specified directory before executing the command
+    - name: Load frigate_0.13.1-sice-20240628-03.bz2 podman image
+      shell: bzcat frigate_0.13.1-sice-20240628-03.bz2 | podman load
+      args:
+        chdir: /home/sice/instalacion/DVAS/FRIGATE/frigate-install # Change to the specified directory before executing the command
 
-#   - name: Install all .deb packages in /path
-#     become: yes
-#     shell: dpkg -i *.deb
-#     args:
-#       chdir: /home/sice/instalacion/DVAS/FRIGATE/frigate-install/PODMAN-PKGS/
+    - name: Install all ffmpeg python3-yml and bc
+      become: yes
+      shell: dpkg -i ffmpeg_7%3a5.1.6-0+deb12u1_amd64.deb python3-dotenv_0.21.0-1_all.deb python3-yaml_6.0-3+b2_amd64.deb bc_1.07.1-3+b1_amd64.deb
+      args:
+        chdir: /home/sice/instalacion/DVAS/FRIGATE/frigate-install/PODMAN-PKGS/
 
 ```
 
@@ -161,6 +171,76 @@ de que va cada bloque/tares
         name: ntpsec
         state: restarted
         enabled: true
+
+```
+
+## El siguiente bloque de código hará las siguientes tareas:
+
+1.  Creará los directorios de trabajo y configuración de frigate
+2.  Copiara las configuraciones del container y las propias de frigate
+
+``` yaml
+#---
+
+    - name: Ensure the directory ~/instalacion/frigate exists
+      file:
+        path: /home/sice/instalacion/frigate
+        state: directory
+        mode: '0755'  # Optional: Set permissions
+
+    - name: Ensure the directory ~/instalacion/frigate/storage exists
+      file:
+        path: /home/sice/instalacion/frigate/storage
+        state: directory
+        mode: '0755'  # Optional: Set permissions
+
+    - name: Ensure the directory ~/instalacion/frigate/config exists
+      file:
+        path: /home/sice/instalacion/frigate/config
+        state: directory
+        mode: '0755'  # Optional: Set permissions
+
+    - name: Copy frigate_launch stuff
+      copy:
+        src: "{{ item }}"
+        dest: /home/sice/instalacion/frigate/
+      loop:
+        - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_launch/docker-compose.yml
+        - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_launch/frigate.service
+        - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_launch/lanza_frigate.sh
+
+    - name: Copy frigate_config stuff
+      copy:
+        src: "{{ item }}"
+        dest: /home/sice/instalacion/frigate/config/
+      loop:
+        - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_config/get_video.sh
+        - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_config/cameras.env
+        - /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/frigate/frigate_config/{{ inventory_hostname}}/config.yml
+
+    - name: Copy .local stuff
+      copy:
+        src: /home/concesion/instalacion/DVAS/FRIGATE/prt-frigate-ansible/ansible/files/.local
+        dest: /home/sice/
+        remote_src: no
+
+    - name: change owner to ~/instalacion/frigate
+      become: yes
+      command: chown -R sice:sice /home/sice/instalacion/frigate
+
+    - name: change owner to ~/.local
+      become: yes
+      command: chown -R sice:sice /home/sice/.local
+
+    - name: Change permissions to executables
+      become: true
+      file:
+        path: "{{ item }}"
+        mode: '0755'  # Set the desired permissions
+      with_items:
+        - /home/sice/.local/bin/podman-compose
+        - /home/sice/instalacion/frigate/lanza_frigate.sh
+        - /home/sice/instalacion/frigate/config/get_video.sh
 
 ```
 
