@@ -7,7 +7,6 @@
 :END:
 
 
-
 * Playbook para instalar frigate con ansible desde MOMS
 
 	Los bloques de código de este documento conforman un playbook de ansible
@@ -37,9 +36,7 @@
 
 #+end_src
 
-
 ** Nos aseguramos que sice está en el grupo sudo y deshabilitamos password de sudo para grupo sudo (a lo loco).
-
 
 #+begin_src yaml 
 #---
@@ -68,8 +65,8 @@
 	- *=tasks=*: Contains the tasks to be performed.
 	- *=user= module*: Ensures the user =sice= is added to the =sudo= group.
 
-
 ** El siguiente bloque de código hará las siguientes tareas:
+
 		1. Ensure the directory ~/instalacion/FRIGATE exists
 		2. copy the local file
            "/home/concesion/instalacion/DVAS/FRIGATE/FRIGATE-INSTALL.tar" into
@@ -188,6 +185,7 @@
 #+end_src
 
 ** El siguiente bloque de código hará las siguientes tareas:
+
 		1. Creará los directorios de trabajo y configuración de frigate
 		2. Copiara las configuraciones del container y las propias de frigate
 
