@@ -64,7 +64,7 @@
 	- *=become: yes=*: Enables privilege escalation.
 	- *=tasks=*: Contains the tasks to be performed.
 	- *=user= module*: Ensures the user =sice= is added to the =sudo= group.
-
+	  
 ** El siguiente bloque de código hará las siguientes tareas:
 
 		1. Ensure the directory ~/instalacion/FRIGATE exists
@@ -254,7 +254,6 @@
         - /home/sice/instalacion/frigate/config/get_video.sh
 
 #+end_src
-
 
 *** Cómo usarlo:
 
