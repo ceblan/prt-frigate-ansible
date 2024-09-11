@@ -267,11 +267,12 @@
 	posicionarse en el directorio adecuado y llamar al comando del siguiente
 	bloque: 
 	
-#+begin_src bash :tangle no
 
+#+begin_src shell :tangle no
+  
   # conectarse a MOMS (172.30.30.12) como usuario concesion y hacer lo que sigue
   cd ~/instalacion/DVAS/FRIGATE/prt-frigate-ansible
-  ansible-playbook ansible/tasks/install_frigate.yml -i inventory.ini -l prt-zm01
-  
+  ansible-playbook ansible/tasks/install_frigate.yml -i inventory.ini -l prt-zm01 
+
 #+end_src
 
