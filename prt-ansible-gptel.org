@@ -129,10 +129,10 @@
       args:
         chdir: /home/sice
 
-#   - name: Load frigate_0.13.1-sice-20240628-03.bz2 podman image
-#     shell: bzcat frigate_0.13.1-sice-20240628-03.bz2 | podman load
-#     args:
-#       chdir: /home/sice/instalacion/DVAS/FRIGATE/frigate-install # Change to the specified directory before executing the command
+    - name: Load frigate_0.13.1-sice-20240628-03.bz2 podman image
+      shell: bzcat frigate_0.13.1-sice-20240628-03.bz2 | podman load
+      args:
+        chdir: /home/sice/instalacion/DVAS/FRIGATE/frigate-install # Change to the specified directory before executing the command
 
     - name: Install all ffmpeg python3-yml and bc
       become: yes
